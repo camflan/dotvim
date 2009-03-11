@@ -1,0 +1,6 @@
+view/*
+.DS_Store
+.svn
+.svn/*
+.netrwhist
+backup_Info.plist

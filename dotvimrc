@@ -1,0 +1,475 @@
+" camron flanders // macvim
+" last edit: 09/29/08:CBF
+" last upload: 10/27/2008
+" automatically uploaded from my macbookpro each monday at noon.
+
+" this is my primary, day-to-day, preferred .vimrc tuned for macvim.
+" I do not publish any of my other .vimrcs which I use for windows gvim
+" or *nix terminals.
+
+" feel free to use all or part of my vimrc to learn, modify, use. If used in
+" a .vimrc you intend to distribute, please credit appropriately.
+
+
+set nocompatible                                                    "screw vi, vim's better
+
+"an extensively customized fruity colorscheme, available at
+"http://media.camronflanders.com/vim/colors/my_fruity.vim
+color my_fruity
+
+"startup settings {{{ 
+
+"source a few files {{{
+
+source macros/matchit.vim
+
+"}}}
+"backup/swp settings {{{ 
+
+"cleanup swap files on launch
+silent execute '!rm -f ~/temp/vim_backups/*'
+
+set bk                                                              "backup, just incase
+set backupdir=/Users/camflan/temp/vim_backups/                      "where to put those backups
+set directory=/Users/camflan/temp/vim_backups/                      "this is for swp files
+
+"}}}
+"file type settings, on {{{ 
+
+filetype on
+filetype plugin on                                                  "turn on filetype based plugins
+" filetype indent is also on, in the next section.
+
+"}}}
+
+"}}}
+"indention stuff {{{ 
+
+filetype indent on                                                  "indent based on filetype
+"set autoindent                                                      "indent, duh
+"set smartindent                                                     "we'll autoindent (with intelligence), bitches
+"set cin                                                             "auto c-indenting
+set shiftround                                                      "round to a multiple of my tab settings
+
+"}}}
+"completion settings {{{ 
+
+set complete+=k                                                     "built in plus my defined, below
+set showfulltag							                            "show me args for tag
+set tags=./tags,tags;
+
+"set tags for filetype {{{
+autocmd FileType python
+  \ set tags+=/Users/camflan/.vim/tags/python.ctags;
+
+autocmd FileType javascript
+  \ set tags+=/Users/camflan/work/scripts/generic_functions/common/tags; |
+  \ set tags+=/Users/camflan/work/scripts/generic_functions/6.x/tags; |
+  \ set tags+=/Users/camflan/work/scripts/generic_functions/5.x/tags;
+
+au FileType javascript setl foldtext=FoldText()
+"}}}
+
+"}}}
+"stuff {{{ 
+
+let xml_use_xhtml = 1                                               "close html as xhtml, properly.
+set nohidden                                                        "I don't want any buffers hanging out
+set showmatch                                                       "show me where the matching bracket is
+set ruler                                                           "show me the ruler!
+set rulerformat=%35(%5l,%-6(%c%V%)\ %5L\ %P%)                       "my ruler shows: line/vColumn/total/pos
+" set guifont=Consolas:h11                                            "the best thing to come out of Redmond
+set guifont=Espresso\ Mono:h11
+set history=100                                                     "keep last 100 commands
+set sc                                                              "show commands as I type
+set anti                                                            "make text pretty
+set visualbell                                                      "a quiet vim is a happy vim
+set backspace=indent,eol,start                                      "allow backspacing over everything
+set modeline
+set transparency=8                                                  "for MacVim only... term sessions are already transparent
+set shortmess=atITA                                                 "I don't want long messages
+set nostartofline                                                   "keep my cursor where it was
+set fen                                                             "let me fold things
+
+"}}}
+"wildmenu {{{ 
+
+set wildmenu                                                        "go wild!
+set wildmode=list:longest,full                                      "tame the wildness, using unix-style match
+set wildignore=*.o,*.obj,*.bak,*.exe,*.pyc,*.DS_Store,*.db          "don't show me crap I don't want
+
+"}}}
+"gui options {{{ 
+
+if has('gui_running')
+    set columns=160                                                     "set width of window off open
+    set lines=50                                                        "height of window off open
+    set guitablabel=%t                                                  "tabs display file name
+
+    "kick it old school, no gui needed.
+    set guioptions-=T                                                   "kill toolbar
+    set guioptions-=m                                                   "kill menu
+    set guioptions-=r                                                   "kill right scrollbar
+    set guioptions-=l                                                   "kill left scrollbar
+    set guioptions-=L                                                   "kill left scrollbar with multiple buffers
+endif
+
+"}}}
+"cursor options {{{ 
+
+set gcr=a:blinkwait500-blinkon1300-blinkoff150                      "tune the blinking of the cursor, short on, long off.
+set gcr=i:hor10                                                     "underline cursor. not too thick not too thin. goldielocks style
+set gcr=v:block                                                     "selecting should cover the text
+
+"}}}
+"tab stuff {{{ 
+
+set expandtab                                                       "expand tabs to spaces, when not an indent
+set smarttab                                                        "let's be smart about our tabs
+set shiftwidth=4                                                    "make tabs 4 spaces
+set softtabstop=4                                                   "softtab value, 4 spaces
+set tabstop=4                                                       "keep default for softtab compat.
+
+"}}}
+"search / diff {{{ 
+
+set hlsearch                                                        "highlight what I find
+set incsearch                                                       "show matches as I type
+set ignorecase smartcase                                            "ignore case unless I type in multi-case
+set diffexpr=MyDiff()                                               "how to diff
+
+"}}}
+"plugin settings {{{ 
+
+"NERDCommenter {{{
+
+let NERDShutUp  =   1                                               "don't complain to me
+
+"}}}
+"NERDTree options {{{ 
+
+let NERDTreeIgnore          =   ['\.pyc$','\.swp$', '\Icon\r$']     "ignore compiled python files and swap files
+let NERDTreeMouseMode       =   3                                   "single-click to open files/nodes
+let NERDTreeWinPos          =   'left'                              "open on the left, obviously.
+let NERDTreeSplitVertical   =   1                                   "and open as vsplit
+let NERDTreeChDirMode       =   2                                   "change working dir when I change root
+let NERDTreeShowBookmarks   =   1
+
+"}}}
+"TagList options {{{ 
+
+let Tlist_Ctags_Cmd = "/usr/local/bin/ctags"                        "gotta tell Taglist where (exuberant) ctags is
+
+"}}}
+"Tab Indent options {{{
+
+"let g:TabIndentStyle = 3
+
+"}}}
+
+"}}}
+"omnicomplete setup {{{
+
+autocmd FileType python set omnifunc=pythoncomplete#Complete
+autocmd FileType javascript set omnifunc=javascriptcomplete#CompleteJS
+autocmd FileType html set omnifunc=htmlcomplete#CompleteTags
+autocmd FileType css set omnifunc=csscomplete#CompleteCSS
+autocmd FileType xml set omnifunc=xmlcomplete#CompleteTags
+autocmd FileType php set omnifunc=phpcomplete#CompletePHP
+
+"}}}
+"abbreviations {{{ 
+
+" Correct Typos {{{ 
+
+" English {{{
+iab beacuse    because
+iab becuase    because
+iab acn        can
+iab cna        can
+iab centre     center
+iab chnage     change
+iab chnages    changes
+iab chnaged    changed
+iab chnagelog  changelog
+iab Chnage     Change
+iab Chnages    Changes
+iab ChnageLog  ChangeLog
+iab debain     debian
+iab Debain     Debian
+iab defualt    default
+iab Defualt    Default
+iab differnt   different
+iab diffrent   different
+iab emial      email
+iab Emial      Email
+iab figth      fight
+iab figther    fighter
+iab fro        for
+iab fucntion   function
+iab ahve       have
+iab homepgae   homepage
+iab logifle    logfile
+iab lokk       look
+iab lokking    looking
+iab mial       mail
+iab Mial       Mail
+iab miantainer maintainer
+iab amke       make
+iab mroe       more
+iab nwe        new
+iab recieve    receive
+iab recieved   received
+iab erturn     return
+iab retrun     return
+iab retunr     return
+iab seperate   separate
+iab shoudl     should
+iab soem       some
+iab taht       that
+iab thta       that
+iab teh        the
+iab tehy       they
+iab truely     truly
+iab waht       what
+iab wiht       with
+iab whic       which
+iab whihc      which
+iab yuo        you
+iab databse    database
+iab versnio    version
+iab obnsolete  obsolete
+iab flase      false
+iab recrusive  recursive
+iab Recrusive  Recursive
+"}}}
+" Days of week {{{
+iab monday     Monday
+iab tuesday    Tuesday
+iab wednesday  Wednesday
+iab thursday   Thursday
+iab friday     Friday
+iab saturday   Saturday
+iab sunday     Sunday
+"}}}
+
+"}}}
+
+"}}}
+"key mappings {{{ 
+
+"unmaps {{{ 
+
+" don't make this Ex
+:unmap Q<CR>
+
+"}}}
+"plugin mappings {{{ 
+
+"call up my textmate style finder
+map <leader>t :FuzzyFinderTextMate<CR>
+
+"toggle taglist
+map ET  :TlistToggle<CR>
+"explore current dir
+map EE  :NERDTreeToggle<CR>
+
+"quickly post to pastie.org and display paste in browser
+:nmap PP :call Makeapastie()<CR>ggVG:Pastie!<CR>:call Fixpastie()<CR>
+
+"}}}
+".vimrc editing maps {{{ 
+
+"makes it easy to edit/reload vimrc for tweaks. I like to tweak.
+:nmap ,s :source /Users/camflan/.vimrc<CR>
+:nmap ,v :tabe /Users/camflan/.vimrc<CR>
+
+"}}}
+"iScript imaps {{{ 
+
+"these will input the beginning of a debug.log statement for iScriptDebug
+imap \dc debug.log("CRITICAL", "
+imap \de debug.log("ERROR", "
+imap \dw debug.log("WARNING", "
+imap \dn debug.log("NOTIFY", "
+imap \di debug.log("INFO", "
+imap \dd debug.log("DEBUG", "
+
+imap \dI debug.incrementIndent();<Esc>o
+imap \dD debug.decrementIndent();<Esc>o
+imap \do debug.logObject("DEBUG", % , 5);<Esc>0f%cw
+
+imap \cf /* ***************************** CONFIGURATION ****************************** */<CR>#define LOG_TO_FILE true      // false: logs to STDOUT<CR>#define DEBUG_LEVEL 5         // 0-5: 5 is most verbose<CR>
+
+imap \nd debug = new iScriptDebug("USE SCRIPT FILE NAME", LOG_TO_FILE, DEBUG_LEVEL);<CR>debug.showINowInfo("INFO");<CR>
+
+"these are used to set false/true lines easily, for Javascript/iScript
+map CT 02ffcwtrue<Esc>
+map CF 0ftcwfalse<Esc>
+
+"make new line -- commented
+map cc   mkyypi//<ESC>
+"deleted new line, replace with comment
+map cd   ddxx
+
+"}}}
+"vmaps, for wrapping a selection {{{ 
+
+"wrap selection in stuff
+:vmap <leader>" "zdi"<C-R>z"<ESC>
+:vmap <leader>' "zdi'<C-R>z'<ESC>
+:vmap <leader>( "zdi(<C-R>z)<ESC>
+:vmap <leader>[ "zdi[<C-R>z]<ESC>
+:vmap <leader>* "zdi/*<C-R>z*/<ESC>
+:vmap <leader>{ "zdi{<CR> <C-R>z <CR>}<ESC>
+
+"}}}
+"maps for work {{{ 
+
+"set mark, go to end, open NERDTree. useful for inserting gen_funcs
+map LI   mnGo<Esc>:NERDTree<CR>
+"drop current snippet into file
+map LU   :call Insert()<CR>,hq`n
+"set filetype=javascript
+map LL   :call SetToJS()<CR>
+"save to inscript.js
+map LP   :call Write_script()<CR>
+
+"}}}
+"mappings to swap 2 words {{{ 
+
+" Swap word with next word
+nmap <silent> gw    "_yiw:s/\(\%#\w\+\)\(\_W\+\)\(\w\+\)/\3\2\1/<cr><c-o><c-l>
+
+"}}}
+"newlines while typing {{{ 
+
+" here are some commands for new lines, quickly while in insert mode
+imap <D-CR> <Esc>o
+imap <D-S-CR> <Esc>A;<CR>
+imap <D-S-A> <Esc>A:<CR>
+
+"}}}
+"buffer navigation nmaps {{{ 
+
+nmap ,h <C-W>h
+nmap ,j <C-W>j
+nmap ,k <C-W>k
+nmap ,l <C-W>l
+
+"}}}
+"general maps {{{ 
+
+"make this the way it should work by default
+noremap Y y$
+
+"toggle wrap
+:nmap ,w :set nowrap!<CR>
+
+" make ii esc, in insert mode.
+map! ii <C-[>
+
+" easily, temporarily disable search highlighting"
+nmap <silent> <leader>n :silent :nohlsearch<CR>
+
+"}}}
+"expansions {{{ 
+
+"file directory
+imap <leader>fd    <C-R>=expand("%:p:h")<CR>
+" present working dir
+imap <leader>pwd   <C-R>=getcwd()<CR>
+" date and name   ie  05/11/07:CBF
+imap <leader>ts    <C-R>=strftime("%m/%d/%y:CBF")<CR>
+
+"}}}
+"django mappings {{{ 
+
+"for templates
+imap {{     {{ }}<Esc>hhi
+imap {%     {% %}<Esc>hhi
+imap {#     {# #}<Esc>hhi
+
+"}}}
+
+"}}}
+"functions {{{ 
+
+"this will be used to setup and paste a script to pastie {{{ 
+function Makeapastie()
+    :exec ":g/^function.\{-}\(\)/normal YPI##"
+:endfunction
+"}}}
+"fix mistakes, duh. {{{ 
+function Fixpastie()
+    :exec ":g/##function/normal dd"
+:endfunction
+
+"}}}
+"makes current file use javascript syntax, yes. I'm that lazy. {{{ 
+function SetToJS()
+    :set filetype=javascript
+:endfunction
+"}}}
+"simply writes the script to my VM so I can run it {{{ 
+function Write_script()
+   let fname = '/Users/camflan/Documents/Parallels/Windows\ XP\ Professional/Windows\ Disks/C/inserver6/script/vim.js'
+   exec ":w! " . fname
+:endfunction
+"}}}
+"insert function into script {{{ 
+function Insert()
+    :silent! 1,$y
+    :q
+    :set paste
+    :put
+    :set nopaste
+:endfunction
+"}}}
+"diff {{{ 
+set diffexpr=MyDiff()
+function MyDiff()
+  let opt = '-a --binary '
+  if &diffopt =~ 'icase' | let opt = opt . '-i ' | endif
+  if &diffopt =~ 'iwhite' | let opt = opt . '-b ' | endif
+  let arg1 = v:fname_in
+  if arg1 =~ ' ' | let arg1 = '"' . arg1 . '"' | endif
+  let arg2 = v:fname_new
+  if arg2 =~ ' ' | let arg2 = '"' . arg2 . '"' | endif
+  let arg3 = v:fname_out
+  if arg3 =~ ' ' | let arg3 = '"' . arg3 . '"' | endif
+  let eq = ''
+  if $VIMRUNTIME =~ ' '
+    if &sh =~ '\<cmd'
+      let cmd = '""' . $VIMRUNTIME . '\diff"'
+      let eq = '"'
+    else
+      let cmd = substitute($VIMRUNTIME, ' ', '" ', '') . '\diff"'
+    endif
+  else
+    let cmd = $VIMRUNTIME . '\diff'
+  endif
+  silent execute '!' . cmd . ' ' . opt . arg1 . ' ' . arg2 . ' > ' . arg3 . eq
+endfunction
+"}}}
+"python refactoring method {{{ 
+function! PythonExtractMethod() range
+let name = inputdialog("Name of new method: ")
+let args = inputdialog("Argument list: ")
+'<
+exe "normal O\<cr>def " . name ."(" . args . "):\<esc>"
+'>
+exe "normal o#return \<cr>\<esc>"
+normal >'<
+endfunction
+"}}}
+"javascript foldtext {{{ 
+function! FoldText()
+    return substitute(getline(v:foldstart), '{.*', ' {...} ', '')
+endfunction
+"}}}
+
+"}}}
+
+
+" vim:foldmethod=marker:ft=vim:
