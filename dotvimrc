@@ -86,7 +86,7 @@ set anti                                                            "make text p
 set visualbell                                                      "a quiet vim is a happy vim
 set backspace=indent,eol,start                                      "allow backspacing over everything
 set modeline
-set transparency=8                                                  "for MacVim only... term sessions are already transparent
+"set transparency=8                                                  "for MacVim only... term sessions are already transparent
 set shortmess=atITA                                                 "I don't want long messages
 set nostartofline                                                   "keep my cursor where it was
 set fen                                                             "let me fold things
