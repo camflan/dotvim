@@ -1,7 +1,5 @@
 " camron flanders // macvim
-" last edit: 09/29/08:CBF
-" last upload: 10/27/2008
-" automatically uploaded from my macbookpro each monday at noon.
+" last update: 05/21/09:CBF
 
 " this is my primary, day-to-day, preferred .vimrc tuned for macvim.
 " I do not publish any of my other .vimrcs which I use for windows gvim
@@ -30,8 +28,8 @@ source macros/matchit.vim
 silent execute '!rm -f ~/temp/vim_backups/*'
 
 set bk                                                              "backup, just incase
-set backupdir=/Users/camflan/temp/vim_backups/                      "where to put those backups
-set directory=/Users/camflan/temp/vim_backups/                      "this is for swp files
+set backupdir=$HOME/temp/vim_backups/                      "where to put those backups
+set directory=$HOME/temp/vim_backups/                      "this is for swp files
 
 "}}}
 "file type settings, on {{{ 
@@ -60,12 +58,12 @@ set tags=./tags,tags;
 
 "set tags for filetype {{{
 autocmd FileType python
-  \ set tags+=/Users/camflan/.vim/tags/python.ctags;
+  \ set tags+=$HOME/.vim/tags/python.ctags;
 
 autocmd FileType javascript
-  \ set tags+=/Users/camflan/work/scripts/generic_functions/common/tags; |
-  \ set tags+=/Users/camflan/work/scripts/generic_functions/6.x/tags; |
-  \ set tags+=/Users/camflan/work/scripts/generic_functions/5.x/tags;
+  \ set tags+=$HOME/work/scripts/generic_functions/common/tags; |
+  \ set tags+=$HOME/work/scripts/generic_functions/6.x/tags; |
+  \ set tags+=$HOME/work/scripts/generic_functions/5.x/tags;
 
 au FileType javascript setl foldtext=FoldText()
 "}}}
@@ -79,7 +77,7 @@ set showmatch                                                       "show me whe
 set ruler                                                           "show me the ruler!
 set rulerformat=%35(%5l,%-6(%c%V%)\ %5L\ %P%)                       "my ruler shows: line/vColumn/total/pos
 " set guifont=Consolas:h11                                            "the best thing to come out of Redmond
-set guifont=Espresso\ Mono:h11
+" set guifont=Espresso\ Mono:h11                                      "for that change of pace.
 set history=100                                                     "keep last 100 commands
 set sc                                                              "show commands as I type
 set anti                                                            "make text pretty
@@ -117,9 +115,9 @@ endif
 "}}}
 "cursor options {{{ 
 
-set gcr=a:blinkwait500-blinkon1300-blinkoff150                      "tune the blinking of the cursor, short on, long off.
-set gcr=i:hor10                                                     "underline cursor. not too thick not too thin. goldielocks style
-set gcr=v:block                                                     "selecting should cover the text
+"set gcr=a:blinkwait500-blinkon1300-blinkoff150                      "tune the blinking of the cursor, short on, long off.
+"set gcr=i:hor10                                                     "underline cursor. not too thick not too thin. goldielocks style
+"set gcr=v:block                                                     "selecting should cover the text
 
 "}}}
 "tab stuff {{{ 
@@ -164,6 +162,15 @@ let Tlist_Ctags_Cmd = "/usr/local/bin/ctags"                        "gotta tell 
 "Tab Indent options {{{
 
 "let g:TabIndentStyle = 3
+
+"}}}
+"Gist options {{{
+let g:gist_clip_command = 'pbcopy'
+let g:gist_detect_filetype = 1
+let g:gist_open_browser_after_post = 1
+
+let g:github_user = "camflan"
+let g:github_token = "897b6a6109e0de41cdb13f391ba62ea2"
 
 "}}}
 
@@ -281,8 +288,8 @@ map EE  :NERDTreeToggle<CR>
 ".vimrc editing maps {{{ 
 
 "makes it easy to edit/reload vimrc for tweaks. I like to tweak.
-:nmap ,s :source /Users/camflan/.vimrc<CR>
-:nmap ,v :tabe /Users/camflan/.vimrc<CR>
+:nmap <leader>s :!source $HOME/.vimrc<CR>
+:nmap ,v :tabe $HOME/.vimrc<CR>
 
 "}}}
 "iScript imaps {{{ 
@@ -372,6 +379,9 @@ map! ii <C-[>
 " easily, temporarily disable search highlighting"
 nmap <silent> <leader>n :silent :nohlsearch<CR>
 
+" toggle a scratch buffer, in a split
+map ,s :call ToggleScratch()<CR>
+
 "}}}
 "expansions {{{ 
 
@@ -379,8 +389,6 @@ nmap <silent> <leader>n :silent :nohlsearch<CR>
 imap <leader>fd    <C-R>=expand("%:p:h")<CR>
 " present working dir
 imap <leader>pwd   <C-R>=getcwd()<CR>
-" date and name   ie  05/11/07:CBF
-imap <leader>ts    <C-R>=strftime("%m/%d/%y:CBF")<CR>
 
 "}}}
 "django mappings {{{ 
@@ -413,7 +421,7 @@ function SetToJS()
 "}}}
 "simply writes the script to my VM so I can run it {{{ 
 function Write_script()
-   let fname = '/Users/camflan/Documents/Parallels/Windows\ XP\ Professional/Windows\ Disks/C/inserver6/script/vim.js'
+   let fname = '$HOME/Documents/Parallels/Windows\ XP\ Professional/Windows\ Disks/C/inserver6/script/vim.js'
    exec ":w! " . fname
 :endfunction
 "}}}
@@ -466,6 +474,15 @@ endfunction
 "javascript foldtext {{{ 
 function! FoldText()
     return substitute(getline(v:foldstart), '{.*', ' {...} ', '')
+endfunction
+"}}}
+"Toggle Scratch Buffer {{{ 
+function! ToggleScratch()
+  if expand('%') == g:ScratchBufferName
+    quit
+  else
+    Sscratch
+  endif
 endfunction
 "}}}
 
