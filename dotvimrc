@@ -1,5 +1,5 @@
 " camron flanders // macvim
-" last update: 05/21/09:CBF
+" last update: 06.30.2009:CBF
 
 " this is my primary, day-to-day, preferred .vimrc tuned for macvim.
 " I do not publish any of my other .vimrcs which I use for windows gvim
@@ -19,7 +19,7 @@ color my_fruity
 
 "source a few files {{{
 
-source macros/matchit.vim
+"source macros/matchit.vim
 
 "}}}
 "backup/swp settings {{{ 
@@ -28,8 +28,8 @@ source macros/matchit.vim
 silent execute '!rm -f ~/temp/vim_backups/*'
 
 set bk                                                              "backup, just incase
-set backupdir=$HOME/temp/vim_backups/                      "where to put those backups
-set directory=$HOME/temp/vim_backups/                      "this is for swp files
+set backupdir=$HOME/temp/vim_backups/                               "where to put those backups
+set directory=$HOME/temp/vim_backups/                               "this is for swp files
 
 "}}}
 "file type settings, on {{{ 
@@ -88,6 +88,7 @@ set modeline
 set shortmess=atITA                                                 "I don't want long messages
 set nostartofline                                                   "keep my cursor where it was
 set fen                                                             "let me fold things
+set foldmethod=manual                                               "and let me do it myway
 
 "}}}
 "wildmenu {{{ 
@@ -134,7 +135,6 @@ set tabstop=4                                                       "keep defaul
 set hlsearch                                                        "highlight what I find
 set incsearch                                                       "show matches as I type
 set ignorecase smartcase                                            "ignore case unless I type in multi-case
-set diffexpr=MyDiff()                                               "how to diff
 
 "}}}
 "plugin settings {{{ 
@@ -295,12 +295,26 @@ map EE  :NERDTreeToggle<CR>
 "iScript imaps {{{ 
 
 "these will input the beginning of a debug.log statement for iScriptDebug
-imap \dc debug.log("CRITICAL", "
-imap \de debug.log("ERROR", "
-imap \dw debug.log("WARNING", "
-imap \dn debug.log("NOTIFY", "
-imap \di debug.log("INFO", "
-imap \dd debug.log("DEBUG", "
+"imap \dc debug.log("CRITICAL", "
+"imap \de debug.log("ERROR", "
+"imap \dw debug.log("WARNING", "
+"imap \dn debug.log("NOTIFY", "
+"imap \di debug.log("INFO", "
+"imap \dd debug.log("DEBUG", "
+
+imap \dc <Esc>:call Logging("CRITICAL")<CR>a
+imap \de <Esc>:call Logging("ERROR")<CR>a
+imap \dw <Esc>:call Logging("WARNING")<CR>a
+imap \dn <Esc>:call Logging("NOTIFY")<CR>a
+imap \di <Esc>:call Logging("INFO")<CR>a
+imap \dd <Esc>:call Logging("DEBUG")<CR>a
+
+nmap \dc :call Logging("CRITICAL")<CR>
+nmap \de :call Logging("ERROR")<CR>
+nmap \dw :call Logging("WARNING")<CR>
+nmap \dn :call Logging("NOTIFY")<CR>
+nmap \di :call Logging("INFO")<CR>
+nmap \dd :call Logging("DEBUG")<CR>
 
 imap \dI debug.incrementIndent();<Esc>o
 imap \dD debug.decrementIndent();<Esc>o
@@ -334,7 +348,7 @@ map cd   ddxx
 "maps for work {{{ 
 
 "set mark, go to end, open NERDTree. useful for inserting gen_funcs
-map LI   mnGo<Esc>:NERDTree<CR>
+map LI   mnGo<Esc>:NERDTree gen_fun<CR>
 "drop current snippet into file
 map LU   :call Insert()<CR>,hq`n
 "set filetype=javascript
@@ -394,9 +408,9 @@ imap <leader>pwd   <C-R>=getcwd()<CR>
 "django mappings {{{ 
 
 "for templates
-imap {{     {{ }}<Esc>hhi
-imap {%     {% %}<Esc>hhi
-imap {#     {# #}<Esc>hhi
+""imap {{     {{ }}<Esc>hhi
+""imap {%     {% %}<Esc>hhi
+""imap {#     {# #}<Esc>hhi
 
 "}}}
 
@@ -434,32 +448,6 @@ function Insert()
     :set nopaste
 :endfunction
 "}}}
-"diff {{{ 
-set diffexpr=MyDiff()
-function MyDiff()
-  let opt = '-a --binary '
-  if &diffopt =~ 'icase' | let opt = opt . '-i ' | endif
-  if &diffopt =~ 'iwhite' | let opt = opt . '-b ' | endif
-  let arg1 = v:fname_in
-  if arg1 =~ ' ' | let arg1 = '"' . arg1 . '"' | endif
-  let arg2 = v:fname_new
-  if arg2 =~ ' ' | let arg2 = '"' . arg2 . '"' | endif
-  let arg3 = v:fname_out
-  if arg3 =~ ' ' | let arg3 = '"' . arg3 . '"' | endif
-  let eq = ''
-  if $VIMRUNTIME =~ ' '
-    if &sh =~ '\<cmd'
-      let cmd = '""' . $VIMRUNTIME . '\diff"'
-      let eq = '"'
-    else
-      let cmd = substitute($VIMRUNTIME, ' ', '" ', '') . '\diff"'
-    endif
-  else
-    let cmd = $VIMRUNTIME . '\diff'
-  endif
-  silent execute '!' . cmd . ' ' . opt . arg1 . ' ' . arg2 . ' > ' . arg3 . eq
-endfunction
-"}}}
 "python refactoring method {{{ 
 function! PythonExtractMethod() range
 let name = inputdialog("Name of new method: ")
@@ -483,6 +471,26 @@ function! ToggleScratch()
   else
     Sscratch
   endif
+endfunction
+"}}}
+"insert/swap iScript debug statements {{{ 
+function! Logging(level)
+    let base_string = 'debug.log("' . a:level . '", "'
+    let curr_line = getline('.')
+
+    let match = match(curr_line, "debug")
+    
+    if match == -1
+        execute "normal i" . base_string
+    else
+        for this_level in ['CRITICAL', 'ERROR', 'WARNING', 'NOTIFY', 'INFO', 'DEBUG']
+            let new_string = substitute(curr_line, this_level, a:level, "")
+            if new_string == curr_line
+                execute "normal ddO" . new_string
+                break
+            endif
+        endfor
+    endif 
 endfunction
 "}}}
 
