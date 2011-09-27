@@ -5,3 +5,4 @@ view/*
 .netrwhist
 backup_Info.plist
 boxStrapConfig
+.VimballRecord

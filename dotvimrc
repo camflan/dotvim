@@ -1,5 +1,5 @@
 " camron flanders // macvim
-" last update: 06.30.2009:CBF
+" last update: 07.30.2011:CBF
 
 " this is my primary, day-to-day, preferred .vimrc tuned for macvim.
 " I do not publish any of my other .vimrcs which I use for windows gvim
@@ -11,9 +11,8 @@
 
 set nocompatible                                                    "screw vi, vim's better
 
-"an extensively customized fruity colorscheme, available at
-"http://media.camronflanders.com/vim/colors/my_fruity.vim
-color my_fruity
+color solarized                                                     "http://ethanschoonover.com/solarized
+set background=dark                                                 "dark version, by default
 
 "startup settings {{{ 
 
@@ -25,18 +24,18 @@ color my_fruity
 "backup/swp settings {{{ 
 
 "cleanup swap files on launch
-silent execute '!rm -f ~/temp/vim_backups/*'
+silent execute '!rm -f ~/.vim_backups/*'
 
 set bk                                                              "backup, just incase
-set backupdir=$HOME/temp/vim_backups/                               "where to put those backups
-set directory=$HOME/temp/vim_backups/                               "this is for swp files
+set backupdir=$HOME/.vim_backups/                                   "where to put those backups
+set directory=$HOME/.vim_backups/                                   "this is for swp files
 
 "}}}
 "file type settings, on {{{ 
 
 filetype on
 filetype plugin on                                                  "turn on filetype based plugins
-" filetype indent is also on, in the next section.
+                                                                    "filetype indent is also on, in the next section.
 
 "}}}
 
@@ -44,9 +43,9 @@ filetype plugin on                                                  "turn on fil
 "indention stuff {{{ 
 
 filetype indent on                                                  "indent based on filetype
-"set autoindent                                                      "indent, duh
-"set smartindent                                                     "we'll autoindent (with intelligence), bitches
-"set cin                                                             "auto c-indenting
+"set autoindent                                                     "indent, duh
+"set smartindent                                                    "we'll autoindent (with intelligence), bitches
+"set cin                                                            "auto c-indenting
 set shiftround                                                      "round to a multiple of my tab settings
 
 "}}}
@@ -101,7 +100,7 @@ set wildignore=*.o,*.obj,*.bak,*.exe,*.pyc,*.DS_Store,*.db          "don't show 
 "gui options {{{ 
 
 if has('gui_running')
-    set columns=160                                                     "set width of window off open
+    set columns=120                                                     "set width of window off open
     set lines=50                                                        "height of window off open
     set guitablabel=%t                                                  "tabs display file name
 
@@ -116,9 +115,9 @@ endif
 "}}}
 "cursor options {{{ 
 
-"set gcr=a:blinkwait500-blinkon1300-blinkoff150                      "tune the blinking of the cursor, short on, long off.
-"set gcr=i:hor10                                                     "underline cursor. not too thick not too thin. goldielocks style
-"set gcr=v:block                                                     "selecting should cover the text
+set gcr=a:blinkwait500-blinkon1300-blinkoff150                      "tune the blinking of the cursor, short on, long off.
+set gcr=i:hor10                                                     "underline cursor. not too thick not too thin. goldielocks style
+set gcr=v:block                                                     "selecting should cover the text
 
 "}}}
 "tab stuff {{{ 
@@ -171,6 +170,8 @@ let g:gist_open_browser_after_post = 1
 
 let g:github_user = "camflan"
 let g:github_token = "897b6a6109e0de41cdb13f391ba62ea2"
+
+map ,gg Gist<CR>
 
 "}}}
 
@@ -267,9 +268,6 @@ iab sunday     Sunday
 
 "unmaps {{{ 
 
-" don't make this Ex
-:unmap Q<CR>
-
 "}}}
 "plugin mappings {{{ 
 
@@ -280,9 +278,6 @@ map <leader>t :FuzzyFinderTextMate<CR>
 map ET  :TlistToggle<CR>
 "explore current dir
 map EE  :NERDTreeToggle<CR>
-
-"quickly post to pastie.org and display paste in browser
-:nmap PP :call Makeapastie()<CR>ggVG:Pastie!<CR>:call Fixpastie()<CR>
 
 "}}}
 ".vimrc editing maps {{{ 
@@ -408,26 +403,15 @@ imap <leader>pwd   <C-R>=getcwd()<CR>
 "django mappings {{{ 
 
 "for templates
-""imap {{     {{ }}<Esc>hhi
-""imap {%     {% %}<Esc>hhi
-""imap {#     {# #}<Esc>hhi
+imap {{     {{ }}<Esc>hhi
+imap {%     {% %}<Esc>hhi
+imap {#     {# #}<Esc>hhi
 
 "}}}
 
 "}}}
 "functions {{{ 
 
-"this will be used to setup and paste a script to pastie {{{ 
-function Makeapastie()
-    :exec ":g/^function.\{-}\(\)/normal YPI##"
-:endfunction
-"}}}
-"fix mistakes, duh. {{{ 
-function Fixpastie()
-    :exec ":g/##function/normal dd"
-:endfunction
-
-"}}}
 "makes current file use javascript syntax, yes. I'm that lazy. {{{ 
 function SetToJS()
     :set filetype=javascript
@@ -484,8 +468,8 @@ function! Logging(level)
         execute "normal i" . base_string
     else
         for this_level in ['CRITICAL', 'ERROR', 'WARNING', 'NOTIFY', 'INFO', 'DEBUG']
-            let new_string = substitute(curr_line, this_level, a:level, "")
-            if new_string == curr_line
+            let new_string = substitute(curr_line, '"' . this_level . '"', '"' . a:level . '"', "")
+            if new_string != curr_line
                 execute "normal ddO" . new_string
                 break
             endif
