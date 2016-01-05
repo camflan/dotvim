@@ -1,5 +1,5 @@
 " camron flanders // macvim
-" last update: 07.30.2011:CBF
+" last update: 01.03.2016:CBF
 
 " this is my primary, day-to-day, preferred .vimrc tuned for macvim.
 " I do not publish any of my other .vimrcs which I use for windows gvim
@@ -8,30 +8,90 @@
 " feel free to use all or part of my vimrc to learn, modify, use. If used in
 " a .vimrc you intend to distribute, please credit appropriately.
 
-
 set nocompatible                                                    "screw vi, vim's better
 
-color solarized                                                     "http://ethanschoonover.com/solarized
-set background=dark                                                 "dark version, by default
+"git-plug configuration {{{
+" Load vim-plug automatically, even if it's not installed
+if empty(glob('~/.vim/autoload/plug.vim'))
+  silent !curl -fLo ~/.vim/autoload/plug.vim --create-dirs https://raw.githubusercontent.com/junegunn/vim-plug/master/plug.vim
+  autocmd VimEnter * PlugInstall | source $MYVIMRC
+endif
 
-"startup settings {{{ 
+" plug-ins list  {{{
+call plug#begin('~/.vim/bundle')
+Plug 'AndrewRadev/splitjoin.vim'
+Plug 'Raimondi/delimitMate'
+Plug 'Shougo/unite.vim'
+Plug 'Shougo/vimproc.vim'
+Plug 'Valloric/YouCompleteMe'
+Plug 'airblade/vim-gitgutter'
+Plug 'altercation/vim-colors-solarized'
+Plug 'bling/vim-airline'
+Plug 'chrisbra/csv.vim'
+Plug 'docunext/closetag.vim'
+Plug 'easymotion/vim-easymotion'
+"Plug 'flowtype/vim-flow'
+Plug 'godlygeek/tabular'
+"Plug 'kien/rainbow_parentheses.vim'
+Plug 'majutsushi/tagbar'
+Plug 'mattn/emmet-vim'
+Plug 'mxw/vim-jsx'
+Plug 'nathanaelkane/vim-indent-guides'
+Plug 'neowit/vim-force.com'
+Plug 'pangloss/vim-javascript'
+Plug 'plasticboy/vim-markdown'
+Plug 'rking/ag.vim'
+Plug 'scrooloose/nerdcommenter'
+Plug 'scrooloose/nerdtree'
+Plug 'scrooloose/syntastic'
+Plug 'sjl/gundo.vim'
+Plug 'skammer/vim-css-color'
+Plug 'ternjs/tern_for_vim'
+Plug 'terryma/vim-multiple-cursors'
+Plug 'tomasr/molokai'
+Plug 'tpope/vim-characterize'
+Plug 'tpope/vim-fugitive'
+Plug 'tpope/vim-haml'
+Plug 'tpope/vim-surround'
+Plug 'vim-scripts/YankRing.vim'
+Plug 'wellle/targets.vim'
+call plug#end()
+"}}}
+"}}}
+
+
+if &t_Co >= 256 || has("gui_running")
+    set background=dark                                             "dark version, by default
+    colorscheme molokai
+endif
+
+if &t_Co > 2 || has("gui_running")
+    " switch syntax highlighting on, when the terminal has colors
+    syntax on
+endif
+
+set relativenumber                                                  "line numbers show current line and relative offsets
+set number
+
+set cursorline                                                      "highlight the current line
+
+let g:gitgutter_max_signs=500                                      "limit how many signs gitgutter calculates, so it doesn't get _too_ slow
+
+"startup settings {{{
 
 "source a few files {{{
 
 "source macros/matchit.vim
 
 "}}}
-"backup/swp settings {{{ 
+"backup/swp settings {{{
 
-"cleanup swap files on launch
-silent execute '!rm -f ~/.vim_backups/*'
-
-set bk                                                              "backup, just incase
-set backupdir=$HOME/.vim_backups/                                   "where to put those backups
-set directory=$HOME/.vim_backups/                                   "this is for swp files
+set nobackup
+set noswapfile
+set undofile
 
 "}}}
-"file type settings, on {{{ 
+"file type settings, on {{{
 
 filetype on
 filetype plugin on                                                  "turn on filetype based plugins
@@ -40,7 +100,7 @@ filetype plugin on                                                  "turn on fil
 "}}}
 
 "}}}
-"indention stuff {{{ 
+"indention stuff {{{
 
 filetype indent on                                                  "indent based on filetype
 "set autoindent                                                     "indent, duh
@@ -49,10 +109,10 @@ filetype indent on                                                  "indent base
 set shiftround                                                      "round to a multiple of my tab settings
 
 "}}}
-"completion settings {{{ 
+"completion settings {{{
 
 set complete+=k                                                     "built in plus my defined, below
-set showfulltag							                            "show me args for tag
+set showfulltag                                                     "show me args for tag
 set tags=./tags,tags;
 
 "set tags for filetype {{{
@@ -64,20 +124,23 @@ autocmd FileType javascript
   \ set tags+=$HOME/work/scripts/generic_functions/6.x/tags; |
   \ set tags+=$HOME/work/scripts/generic_functions/5.x/tags;
 
-au FileType javascript setl foldtext=FoldText()
 "}}}
 
 "}}}
-"stuff {{{ 
+"stuff {{{
 
 let xml_use_xhtml = 1                                               "close html as xhtml, properly.
+set encoding=utf-8
+set scrolloff=3
+set nowrap
 set nohidden                                                        "I don't want any buffers hanging out
 set showmatch                                                       "show me where the matching bracket is
+set ttyfast
 set ruler                                                           "show me the ruler!
 set rulerformat=%35(%5l,%-6(%c%V%)\ %5L\ %P%)                       "my ruler shows: line/vColumn/total/pos
-" set guifont=Consolas:h11                                            "the best thing to come out of Redmond
-" set guifont=Espresso\ Mono:h11                                      "for that change of pace.
-set history=100                                                     "keep last 100 commands
+set guifont=Input\ Mono:h13
+set history=1000                                                    "keep last 1000 commands
+set undolevels=1000                                                 "use many muchos levels of undo
 set sc                                                              "show commands as I type
 set anti                                                            "make text pretty
 set visualbell                                                      "a quiet vim is a happy vim
@@ -87,17 +150,31 @@ set modeline
 set shortmess=atITA                                                 "I don't want long messages
 set nostartofline                                                   "keep my cursor where it was
 set fen                                                             "let me fold things
-set foldmethod=manual                                               "and let me do it myway
+set foldmethod=indent                                               "and fold on indents
+set foldlevelstart=99
+set foldnestmax=10                                                  "10 nested fold max
+
+set lazyredraw                                                      "don't update the screen during macros
+
+
+
+set listchars=tab:▸\ ,trail:·,extends:#,nbsp:·
+
+nnoremap <leader>z za
 
 "}}}
-"wildmenu {{{ 
+"wildmenu {{{
 
 set wildmenu                                                        "go wild!
 set wildmode=list:longest,full                                      "tame the wildness, using unix-style match
 set wildignore=*.o,*.obj,*.bak,*.exe,*.pyc,*.DS_Store,*.db          "don't show me crap I don't want
 
+set completeopt=menu,menuone
+let g:ycm_add_preview_to_completeopt = 1
+let g:ycm_autoclose_preview_window_after_completion = 1
+
 "}}}
-"gui options {{{ 
+"gui options {{{
 
 if has('gui_running')
     set columns=120                                                     "set width of window off open
@@ -113,14 +190,14 @@ if has('gui_running')
 endif
 
 "}}}
-"cursor options {{{ 
+"cursor options {{{
 
-set gcr=a:blinkwait500-blinkon1300-blinkoff150                      "tune the blinking of the cursor, short on, long off.
+set gcr=a:blinkwait500-blinkon1000-blinkoff150                      "tune the blinking of the cursor
 set gcr=i:hor10                                                     "underline cursor. not too thick not too thin. goldielocks style
 set gcr=v:block                                                     "selecting should cover the text
 
 "}}}
-"tab stuff {{{ 
+"tab stuff {{{
 
 set expandtab                                                       "expand tabs to spaces, when not an indent
 set smarttab                                                        "let's be smart about our tabs
@@ -129,33 +206,74 @@ set softtabstop=4                                                   "softtab val
 set tabstop=4                                                       "keep default for softtab compat.
 
 "}}}
-"search / diff {{{ 
+"search / diff {{{
 
 set hlsearch                                                        "highlight what I find
 set incsearch                                                       "show matches as I type
 set ignorecase smartcase                                            "ignore case unless I type in multi-case
 
 "}}}
-"plugin settings {{{ 
+"plugin settings {{{
+
+
+"syntastic settings {{{
+set statusline+=%#warningmsg#
+set statusline+=%{SyntasticStatuslineFlag()}
+set statusline+=%*
+
+let g:syntastic_always_populate_loc_list = 1
+let g:syntastic_auto_loc_list = 1
+let g:syntastic_check_on_open = 1
+let g:syntastic_check_on_wq = 0
+
+let g:syntastic_javascript_checkers = ['flow']
+let g:syntastic_scss_checkers = ['sassc']
+"}}}
+
+"airline
+let g:airline_powerline_fonts = 1
+let g:airline#extensions#tagbar#enabled = 1
+let g:airline#extensions#csv#enabled = 1
+
+let g:jsx_ext_required = 0
+
+"Rainbow parentheses
+"au VimEnter * RainbowParenthesesToggleAll
+"au Syntax * RainbowParenthesesLoadRound
+"au Syntax * RainbowParenthesesLoadSquare
+"au Syntax * RainbowParenthesesLoadBraces
+
+"}}}
+
+"Undo Tree {{{
+
+nnoremap <leader>u :GundoToggle<CR>
+let g:gundo_right = 1
+
+"}}}
+
+"TagBar {{{ 
+map ET  :TagbarToggle<CR>
+
+""}}}
 
 "NERDCommenter {{{
 
 let NERDShutUp  =   1                                               "don't complain to me
+map <leader>cc <plug>NERDCommenterToggle
+
 
 "}}}
-"NERDTree options {{{ 
+"NERDTree options {{{
 
 let NERDTreeIgnore          =   ['\.pyc$','\.swp$', '\Icon\r$']     "ignore compiled python files and swap files
 let NERDTreeMouseMode       =   3                                   "single-click to open files/nodes
 let NERDTreeWinPos          =   'left'                              "open on the left, obviously.
 let NERDTreeSplitVertical   =   1                                   "and open as vsplit
-let NERDTreeChDirMode       =   2                                   "change working dir when I change root
 let NERDTreeShowBookmarks   =   1
-
-"}}}
-"TagList options {{{ 
-
-let Tlist_Ctags_Cmd = "/usr/local/bin/ctags"                        "gotta tell Taglist where (exuberant) ctags is
+let NERDTreeQuitOnOpen=1                                            "quit on opening files from the tree
+let NERDTreeHighlightCursorline=1                                   "highlight the selected entry in the tree
+let NERDTreeChDirMode       =   2                                   "change working dir when I change root
 
 "}}}
 "Tab Indent options {{{
@@ -184,11 +302,16 @@ autocmd FileType html set omnifunc=htmlcomplete#CompleteTags
 autocmd FileType css set omnifunc=csscomplete#CompleteCSS
 autocmd FileType xml set omnifunc=xmlcomplete#CompleteTags
 autocmd FileType php set omnifunc=phpcomplete#CompletePHP
+autocmd BufNewFile,BufRead *.scss set ft=scss.css
+
+"let g:SuperTabDefaultCompletionType = "context"
+"let g:SuperTabClosePreviewOnPopupClose = 1 
+"let g:SuperTabLongestHighlight = 1
 
 "}}}
-"abbreviations {{{ 
+"abbreviations {{{
 
-" Correct Typos {{{ 
+" Correct Typos {{{
 
 " English {{{
 iab beacuse    because
@@ -264,101 +387,35 @@ iab sunday     Sunday
 "}}}
 
 "}}}
-"key mappings {{{ 
-
-"unmaps {{{ 
+"key mappings {{{
+"unmaps {{{
 
 "}}}
-"plugin mappings {{{ 
+"plugin mappings {{{
 
-"call up my textmate style finder
-map <leader>t :FuzzyFinderTextMate<CR>
+"Unite
+let g:unite_source_history_yank_enable = 1
+call unite#filters#matcher_default#use(['matcher_fuzzy'])
+nnoremap <leader>y :<C-u>Unite -no-split -buffer-name=yank history/yank<cr>
 
-"toggle taglist
-map ET  :TlistToggle<CR>
 "explore current dir
 map EE  :NERDTreeToggle<CR>
 
 "}}}
-".vimrc editing maps {{{ 
+".vimrc editing maps {{{
 
 "makes it easy to edit/reload vimrc for tweaks. I like to tweak.
-:nmap <leader>s :!source $HOME/.vimrc<CR>
-:nmap ,v :tabe $HOME/.vimrc<CR>
+:nmap <leader>s :so $MYVIMRC<CR>
+:nmap <leader>v :tabe $MYVIMRC<CR>
 
 "}}}
-"iScript imaps {{{ 
-
-"these will input the beginning of a debug.log statement for iScriptDebug
-"imap \dc debug.log("CRITICAL", "
-"imap \de debug.log("ERROR", "
-"imap \dw debug.log("WARNING", "
-"imap \dn debug.log("NOTIFY", "
-"imap \di debug.log("INFO", "
-"imap \dd debug.log("DEBUG", "
-
-imap \dc <Esc>:call Logging("CRITICAL")<CR>a
-imap \de <Esc>:call Logging("ERROR")<CR>a
-imap \dw <Esc>:call Logging("WARNING")<CR>a
-imap \dn <Esc>:call Logging("NOTIFY")<CR>a
-imap \di <Esc>:call Logging("INFO")<CR>a
-imap \dd <Esc>:call Logging("DEBUG")<CR>a
-
-nmap \dc :call Logging("CRITICAL")<CR>
-nmap \de :call Logging("ERROR")<CR>
-nmap \dw :call Logging("WARNING")<CR>
-nmap \dn :call Logging("NOTIFY")<CR>
-nmap \di :call Logging("INFO")<CR>
-nmap \dd :call Logging("DEBUG")<CR>
-
-imap \dI debug.incrementIndent();<Esc>o
-imap \dD debug.decrementIndent();<Esc>o
-imap \do debug.logObject("DEBUG", % , 5);<Esc>0f%cw
-
-imap \cf /* ***************************** CONFIGURATION ****************************** */<CR>#define LOG_TO_FILE true      // false: logs to STDOUT<CR>#define DEBUG_LEVEL 5         // 0-5: 5 is most verbose<CR>
-
-imap \nd debug = new iScriptDebug("USE SCRIPT FILE NAME", LOG_TO_FILE, DEBUG_LEVEL);<CR>debug.showINowInfo("INFO");<CR>
-
-"these are used to set false/true lines easily, for Javascript/iScript
-map CT 02ffcwtrue<Esc>
-map CF 0ftcwfalse<Esc>
-
-"make new line -- commented
-map cc   mkyypi//<ESC>
-"deleted new line, replace with comment
-map cd   ddxx
-
-"}}}
-"vmaps, for wrapping a selection {{{ 
-
-"wrap selection in stuff
-:vmap <leader>" "zdi"<C-R>z"<ESC>
-:vmap <leader>' "zdi'<C-R>z'<ESC>
-:vmap <leader>( "zdi(<C-R>z)<ESC>
-:vmap <leader>[ "zdi[<C-R>z]<ESC>
-:vmap <leader>* "zdi/*<C-R>z*/<ESC>
-:vmap <leader>{ "zdi{<CR> <C-R>z <CR>}<ESC>
-
-"}}}
-"maps for work {{{ 
-
-"set mark, go to end, open NERDTree. useful for inserting gen_funcs
-map LI   mnGo<Esc>:NERDTree gen_fun<CR>
-"drop current snippet into file
-map LU   :call Insert()<CR>,hq`n
-"set filetype=javascript
-map LL   :call SetToJS()<CR>
-"save to inscript.js
-map LP   :call Write_script()<CR>
-
-"}}}
-"mappings to swap 2 words {{{ 
+"mappings to swap 2 words {{{
 
 " Swap word with next word
 nmap <silent> gw    "_yiw:s/\(\%#\w\+\)\(\_W\+\)\(\w\+\)/\3\2\1/<cr><c-o><c-l>
 
 "}}}
-"newlines while typing {{{ 
+"newlines while typing {{{
 
 " here are some commands for new lines, quickly while in insert mode
 imap <D-CR> <Esc>o
@@ -366,21 +423,40 @@ imap <D-S-CR> <Esc>A;<CR>
 imap <D-S-A> <Esc>A:<CR>
 
 "}}}
-"buffer navigation nmaps {{{ 
+"buffer navigation nmaps {{{
 
-nmap ,h <C-W>h
-nmap ,j <C-W>j
-nmap ,k <C-W>k
-nmap ,l <C-W>l
+map <C-h> <C-W>h
+map <C-j> <C-W>j
+map <C-k> <C-W>k
+map <C-l> <C-W>l
 
 "}}}
-"general maps {{{ 
+"general maps {{{
+
+" Jump to matching pairs easily, with Tab
+nnoremap <Tab> %
+vnoremap <Tab> %
+
+"make vim use correct regexes
+nnoremap / /\v
+vnoremap / /\v
+
+map <leader>l :set list!<CR>
+nnoremap <leader>i :set list!<cr>
+
+" Speed up scrolling of the viewport slightly
+nnoremap <C-e> 2<C-e>
+nnoremap <C-y> 2<C-y>
+
+
+"changes :command to ;command making it faster
+nnoremap ; :
 
 "make this the way it should work by default
 noremap Y y$
 
 "toggle wrap
-:nmap ,w :set nowrap!<CR>
+nmap <leader>w :set nowrap!<CR>
 
 " make ii esc, in insert mode.
 map! ii <C-[>
@@ -389,10 +465,13 @@ map! ii <C-[>
 nmap <silent> <leader>n :silent :nohlsearch<CR>
 
 " toggle a scratch buffer, in a split
-map ,s :call ToggleScratch()<CR>
+"map ,S :call ToggleScratch()<CR>
+
+" sudo write to files that weren't opened with sudo originally!
+cmap w!! w !sudo tee % >/dev/null
 
 "}}}
-"expansions {{{ 
+"expansions {{{
 
 "file directory
 imap <leader>fd    <C-R>=expand("%:p:h")<CR>
@@ -400,39 +479,11 @@ imap <leader>fd    <C-R>=expand("%:p:h")<CR>
 imap <leader>pwd   <C-R>=getcwd()<CR>
 
 "}}}
-"django mappings {{{ 
-
-"for templates
-imap {{     {{ }}<Esc>hhi
-imap {%     {% %}<Esc>hhi
-imap {#     {# #}<Esc>hhi
 
 "}}}
+"functions {{{
 
-"}}}
-"functions {{{ 
-
-"makes current file use javascript syntax, yes. I'm that lazy. {{{ 
-function SetToJS()
-    :set filetype=javascript
-:endfunction
-"}}}
-"simply writes the script to my VM so I can run it {{{ 
-function Write_script()
-   let fname = '$HOME/Documents/Parallels/Windows\ XP\ Professional/Windows\ Disks/C/inserver6/script/vim.js'
-   exec ":w! " . fname
-:endfunction
-"}}}
-"insert function into script {{{ 
-function Insert()
-    :silent! 1,$y
-    :q
-    :set paste
-    :put
-    :set nopaste
-:endfunction
-"}}}
-"python refactoring method {{{ 
+"python refactoring method {{{
 function! PythonExtractMethod() range
 let name = inputdialog("Name of new method: ")
 let args = inputdialog("Argument list: ")
@@ -443,12 +494,7 @@ exe "normal o#return \<cr>\<esc>"
 normal >'<
 endfunction
 "}}}
-"javascript foldtext {{{ 
-function! FoldText()
-    return substitute(getline(v:foldstart), '{.*', ' {...} ', '')
-endfunction
-"}}}
-"Toggle Scratch Buffer {{{ 
+"Toggle Scratch Buffer {{{
 function! ToggleScratch()
   if expand('%') == g:ScratchBufferName
     quit
@@ -457,13 +503,13 @@ function! ToggleScratch()
   endif
 endfunction
 "}}}
-"insert/swap iScript debug statements {{{ 
+"insert/swap iScript debug statements {{{
 function! Logging(level)
     let base_string = 'debug.log("' . a:level . '", "'
     let curr_line = getline('.')
 
     let match = match(curr_line, "debug")
-    
+
     if match == -1
         execute "normal i" . base_string
     else
@@ -474,11 +520,48 @@ function! Logging(level)
                 break
             endif
         endfor
-    endif 
+    endif
 endfunction
 "}}}
+"
+"iScript imaps {{{
+
+"these will input the beginning of a debug.log statement for iScriptDebug
+imap \dc <Esc>:call Logging("CRITICAL")<CR>a
+imap \de <Esc>:call Logging("ERROR")<CR>a
+imap \dw <Esc>:call Logging("WARNING")<CR>a
+imap \dn <Esc>:call Logging("NOTIFY")<CR>a
+imap \di <Esc>:call Logging("INFO")<CR>a
+imap \dd <Esc>:call Logging("DEBUG")<CR>a
+
+"this will swap the current debug level for a new one
+nmap \dc :call Logging("CRITICAL")<CR>
+nmap \de :call Logging("ERROR")<CR>
+nmap \dw :call Logging("WARNING")<CR>
+nmap \dn :call Logging("NOTIFY")<CR>
+nmap \di :call Logging("INFO")<CR>
+nmap \dd :call Logging("DEBUG")<CR>
+
+"}}}
+
+"force.com configuration {{{
+
+let g:apex_backup_folder="/Users/camron/temp/apex/backup"
+let g:apex_temp_folder = "/Users/camron/temp/apex/deployment"
+let g:apex_properties_folder = "/Users/camron/.apex-properties"
+let g:apex_workspace_path = "/Users/camron/Development/DriverDo-Force/"
+
+let g:apex_server=1 " start server on first call
+" allow server to wait for new connections within 30 minutes
+let g:apex_server_timeoutSec=60*30
+
+let g:apex_tooling_force_dot_com_path="/usr/local/bin/tooling-force.com.jar"
+
 
 "}}}
 
 
-" vim:foldmethod=marker:ft=vim:
+
+
+
+" vim:foldmethod=marker:foldlevel=1:ft=vim:
