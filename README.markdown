@@ -6,7 +6,7 @@ camron flanders // macvim
 last update
 -----------
 
-07.30.2011:CBF
+01.05.2015:CBF
 
 WHAT?
 =====
@@ -18,3 +18,6 @@ or *nix terminals.
 feel free to use all or part of my vimrc to learn, modify, use. If used in
 a .vimrc you intend to distribute, please credit appropriately.
 
+INSTALL
+=======
+After launching vim, run :PlugInstall to download and install all plugins
