@@ -6,3 +6,6 @@ view/*
 backup_Info.plist
 boxStrapConfig
 .VimballRecord
+
+bundle/
+autoload/
