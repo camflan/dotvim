@@ -1,5 +1,5 @@
 " camron flanders // macvim
-" last update: 01.03.2016:CBF
+" last update: 05.18.2016:CBF
 
 " this is my primary, day-to-day, preferred .vimrc tuned for macvim.
 " I do not publish any of my other .vimrcs which I use for windows gvim
@@ -19,61 +19,120 @@ endif
 
 " plug-ins list  {{{
 call plug#begin('~/.vim/bundle')
+"Plug 'Shougo/neoyank.vim'
+"Plug 'Shougo/unite.vim'
+"Plug 'airblade/vim-gitgutter'
+"Plug 'flowtype/vim-flow'
+"Plug 'kien/rainbow_parentheses.vim'
+"Plug 'ryanoasis/vim-devicons'
 Plug 'AndrewRadev/splitjoin.vim'
 Plug 'Raimondi/delimitMate'
-Plug 'Shougo/unite.vim'
 Plug 'Shougo/vimproc.vim'
 Plug 'Valloric/YouCompleteMe'
-Plug 'airblade/vim-gitgutter'
-Plug 'altercation/vim-colors-solarized'
+Plug 'joonty/vdebug'
+
+Plug 'stephpy/vim-php-cs-fixer'
+Plug '2072/vim-syntax-for-PHP'
+Plug 'AndrewRadev/switch.vim'
+Plug 'SirVer/ultisnips'
 Plug 'bling/vim-airline'
-Plug 'chrisbra/csv.vim'
+Plug 'vim-airline/vim-airline-themes'
 Plug 'docunext/closetag.vim'
 Plug 'easymotion/vim-easymotion'
-"Plug 'flowtype/vim-flow'
 Plug 'godlygeek/tabular'
-"Plug 'kien/rainbow_parentheses.vim'
+Plug 'honza/vim-snippets'
+Plug 'joonty/vim-phpunitqf'
 Plug 'majutsushi/tagbar'
 Plug 'mattn/emmet-vim'
-Plug 'mxw/vim-jsx'
+Plug 'mhinz/vim-signify'
+Plug 'mkusher/padawan.vim'
 Plug 'nathanaelkane/vim-indent-guides'
-Plug 'neowit/vim-force.com'
-Plug 'pangloss/vim-javascript'
-Plug 'plasticboy/vim-markdown'
+Plug 'ntpeters/vim-better-whitespace'
+Plug 'rhysd/conflict-marker.vim'
 Plug 'rking/ag.vim'
 Plug 'scrooloose/nerdcommenter'
-Plug 'scrooloose/nerdtree'
 Plug 'scrooloose/syntastic'
+Plug 'sheerun/vim-polyglot'
 Plug 'sjl/gundo.vim'
 Plug 'skammer/vim-css-color'
 Plug 'ternjs/tern_for_vim'
 Plug 'terryma/vim-multiple-cursors'
-Plug 'tomasr/molokai'
 Plug 'tpope/vim-characterize'
 Plug 'tpope/vim-fugitive'
-Plug 'tpope/vim-haml'
+Plug 'tpope/vim-repeat'
+Plug 'tpope/vim-rsi'
+Plug 'tpope/vim-speeddating'
 Plug 'tpope/vim-surround'
+Plug 'tpope/vim-vinegar'
+Plug 'vim-ctrlspace/vim-ctrlspace'
+Plug 'vim-php/tagbar-phpctags.vim'
+Plug 'vim-scripts/LargeFile'
+Plug 'vim-scripts/SQLUtilities'
+Plug 'vim-scripts/SQLComplete.vim'
+Plug 'vim-scripts/Align'
 Plug 'vim-scripts/YankRing.vim'
+Plug 'vim-scripts/vcscommand.vim'
 Plug 'wellle/targets.vim'
+
+" syntax/language files
+Plug 'StanAngeloff/php.vim'
+Plug 'chrisbra/csv.vim'
+Plug 'mxw/vim-jsx'
+Plug 'pangloss/vim-javascript'
+Plug 'plasticboy/vim-markdown'
+Plug 'tpope/vim-haml'
+
+" color themes
+Plug 'altercation/vim-colors-solarized'
+Plug 'tomasr/molokai'
+
+Plug 'nanotech/jellybeans.vim'
+Plug 'w0ng/vim-hybrid'
+
+"Plug 'Konstruktionist/vim'
+"Plug 'trusktr/seti.vim'
+Plug 'MaxSt/FlatColor'
+Plug 'benjaminwhite/Benokai'
+Plug 'chriskempson/tomorrow-theme', {'rtp': 'vim'}
+Plug 'marciomazza/vim-brogrammer-theme'
+Plug 'mswift42/vim-themes'
+Plug 'petelewis/vim-evolution'
+Plug 'toupeira/vim-desertink'
+Plug 'tpope/vim-vividchalk'
+Plug 'trevorrjohn/vim-obsidian'
+Plug 'notpratheek/vim-luna'
+Plug 'mhartington/oceanic-next'
+Plug 'GertjanReynaert/cobalt2-vim-theme'
 call plug#end()
 "}}}
 "}}}
 
-
-if &t_Co >= 256 || has("gui_running")
-    set background=dark                                             "dark version, by default
-    colorscheme molokai
-endif
-
-if &t_Co > 2 || has("gui_running")
-    " switch syntax highlighting on, when the terminal has colors
+if &t_Co > 2
     syntax on
 endif
+
+if &t_Co >= 256 || has("gui_running")
+    set background=dark
+    colorscheme brogrammer
+endif
+
+if has("gui_running")
+        set macligatures
+endif
+
+let mapleader = "\<Space>"                                          "set leader to spacebar
 
 set relativenumber                                                  "line numbers show current line and relative offsets
 set number
 
-set cursorline                                                      "highlight the current line
+"set cursorline                                                      "highlight the current line
+
+" only highlight the cursorline in the active window
+augroup CursorLine
+  au!
+  au VimEnter,WinEnter,BufWinEnter * setlocal cursorline
+  au WinLeave * setlocal nocursorline
+augroup END
 
 let g:gitgutter_max_signs=500                                      "limit how many signs gitgutter calculates, so it doesn't get _too_ slow
 
@@ -88,7 +147,7 @@ let g:gitgutter_max_signs=500                                      "limit how ma
 
 set nobackup
 set noswapfile
-set undofile
+set noundofile
 
 "}}}
 "file type settings, on {{{
@@ -113,7 +172,7 @@ set shiftround                                                      "round to a 
 
 set complete+=k                                                     "built in plus my defined, below
 set showfulltag                                                     "show me args for tag
-set tags=./tags,tags;
+set tags=./tags,tags,~/.vimtags;
 
 "set tags for filetype {{{
 autocmd FileType python
@@ -133,12 +192,13 @@ let xml_use_xhtml = 1                                               "close html 
 set encoding=utf-8
 set scrolloff=3
 set nowrap
-set nohidden                                                        "I don't want any buffers hanging out
+set hidden                                                          "let me have hidden buffers
 set showmatch                                                       "show me where the matching bracket is
 set ttyfast
 set ruler                                                           "show me the ruler!
 set rulerformat=%35(%5l,%-6(%c%V%)\ %5L\ %P%)                       "my ruler shows: line/vColumn/total/pos
-set guifont=Input\ Mono:h13
+"set guifont=InputMono\ ExLight:h13                                 "use guifont=* to open font picker
+set guifont=Hasklig\ Light:h14                                      "use guifont=* to open font picker
 set history=1000                                                    "keep last 1000 commands
 set undolevels=1000                                                 "use many muchos levels of undo
 set sc                                                              "show commands as I type
@@ -157,8 +217,8 @@ set foldnestmax=10                                                  "10 nested f
 set lazyredraw                                                      "don't update the screen during macros
 
 
-
-set listchars=tab:▸\ ,trail:·,extends:#,nbsp:·
+set list                                                            "show chars
+set listchars=tab:▸\ ,trail:·,extends:»,nbsp:·                      "how to show chars
 
 nnoremap <leader>z za
 
@@ -170,15 +230,10 @@ set wildmode=list:longest,full                                      "tame the wi
 set wildignore=*.o,*.obj,*.bak,*.exe,*.pyc,*.DS_Store,*.db          "don't show me crap I don't want
 
 set completeopt=menu,menuone
-let g:ycm_add_preview_to_completeopt = 1
-let g:ycm_autoclose_preview_window_after_completion = 1
-
 "}}}
 "gui options {{{
 
 if has('gui_running')
-    set columns=120                                                     "set width of window off open
-    set lines=50                                                        "height of window off open
     set guitablabel=%t                                                  "tabs display file name
 
     "kick it old school, no gui needed.
@@ -212,9 +267,13 @@ set hlsearch                                                        "highlight w
 set incsearch                                                       "show matches as I type
 set ignorecase smartcase                                            "ignore case unless I type in multi-case
 
+set laststatus=2
+
 "}}}
 "plugin settings {{{
 
+"multi cursor
+"let g:multi_cursor_start_key='<C-m>'
 
 "syntastic settings {{{
 set statusline+=%#warningmsg#
@@ -226,22 +285,76 @@ let g:syntastic_auto_loc_list = 1
 let g:syntastic_check_on_open = 1
 let g:syntastic_check_on_wq = 0
 
-let g:syntastic_javascript_checkers = ['flow']
+"let g:syntastic_javascript_checkers = ['flow']
 let g:syntastic_scss_checkers = ['sassc']
+let g:syntastic_php_checkers = ['php']
 "}}}
 
-"airline
+"airline {{{
 let g:airline_powerline_fonts = 1
 let g:airline#extensions#tagbar#enabled = 1
 let g:airline#extensions#csv#enabled = 1
+let g:airline_theme='jellybeans'
+
+
+function! AirlineInit()
+    let g:airline_section_z = '%3p%% %{g:airline_symbols.linenr}%#__accent_bold#%4l%#__restore__#/%L:%3v'
+endfunction
+
+let g:airline#extensions#default#section_truncate_width = {
+    \ 'a': 79,
+    \ 'b': 100,
+    \ 'x': 88,
+    \ 'y': 88,
+    \ 'z': 45,
+    \ 'warning': 90,
+    \ 'error': 90,
+    \ }
+
+autocmd VimEnter * call AirlineInit()
+"}}}
+
+"YankRing {{{
+let g:yankring_history_dir = "~/temp, /tmp, ~/.vim-temp"
+"}}}
 
 let g:jsx_ext_required = 0
 
-"Rainbow parentheses
-"au VimEnter * RainbowParenthesesToggleAll
-"au Syntax * RainbowParenthesesLoadRound
-"au Syntax * RainbowParenthesesLoadSquare
-"au Syntax * RainbowParenthesesLoadBraces
+"}}}
+
+"VDebug {{{
+if !exists('g:vdebug_options')
+    let g:vdebug_options = {}
+endif
+
+let g:vdebug_options["port"] = 9100
+let g:vdebug_options["break_on_open"] = 0
+let g:vdebug_options["watch_window_height"]=45
+let g:vdebug_options["status_window_height"]=5
+" let g:vdebug_options["continuous_mode"]=1
+"}}}
+
+
+"Ultisnips {{{
+let g:UltiSnipsExpandTrigger="<c-j>"
+let g:UltiSnipsJumpForwardTrigger="<c-b>"
+let g:UltiSnipsJumpBackwardTrigger="<c-z>"
+
+"}}}
+
+"YCM {{{
+let g:ycm_add_preview_to_completeopt = 1
+let g:ycm_autoclose_preview_window_after_completion = 1
+
+if !exists('g:ycm_semantic_triggers')
+    let g:ycm_semantic_triggers = {}
+endif
+let g:ycm_semantic_triggers.php = ['->', '::', '(', 'use ', 'namespace ', '\']
+
+"}}}
+"Padawan {{{
+
+let g:padawan#composer_command = "php /usr/local/bin/composer"
 
 "}}}
 
@@ -251,9 +364,20 @@ nnoremap <leader>u :GundoToggle<CR>
 let g:gundo_right = 1
 
 "}}}
+"Explore map & settings {{{
+nnoremap <leader>e :Ex<CR>
 
-"TagBar {{{ 
-map ET  :TagbarToggle<CR>
+let g:netrw_liststyle=3
+
+"}}}
+
+"TagBar {{{
+nnoremap <leader>t  :TagbarToggle<CR>
+
+""}}}
+
+"PHP CS Fixer {{{
+let g:php_cs_fixer_level = "symfony"
 
 ""}}}
 
@@ -264,21 +388,16 @@ map <leader>cc <plug>NERDCommenterToggle
 
 
 "}}}
-"NERDTree options {{{
+" ctrl space options {{{
 
-let NERDTreeIgnore          =   ['\.pyc$','\.swp$', '\Icon\r$']     "ignore compiled python files and swap files
-let NERDTreeMouseMode       =   3                                   "single-click to open files/nodes
-let NERDTreeWinPos          =   'left'                              "open on the left, obviously.
-let NERDTreeSplitVertical   =   1                                   "and open as vsplit
-let NERDTreeShowBookmarks   =   1
-let NERDTreeQuitOnOpen=1                                            "quit on opening files from the tree
-let NERDTreeHighlightCursorline=1                                   "highlight the selected entry in the tree
-let NERDTreeChDirMode       =   2                                   "change working dir when I change root
+"let g:CtrlSpaceSymbols = { "Vis": "ϟ"}
+nnoremap <silent><leader>f :CtrlSpace O<cr>
+nnoremap <silent><leader>b :CtrlSpace H<cr>
 
-"}}}
-"Tab Indent options {{{
-
-"let g:TabIndentStyle = 3
+" Use ag for search
+if executable('ag')
+  let g:CtrlSpaceGlobCommand = 'ag -l --nocolor -g ""'
+endif
 
 "}}}
 "Gist options {{{
@@ -289,24 +408,21 @@ let g:gist_open_browser_after_post = 1
 let g:github_user = "camflan"
 let g:github_token = "897b6a6109e0de41cdb13f391ba62ea2"
 
-map ,gg Gist<CR>
-
 "}}}
 
 "}}}
 "omnicomplete setup {{{
 
-autocmd FileType python set omnifunc=pythoncomplete#Complete
-autocmd FileType javascript set omnifunc=javascriptcomplete#CompleteJS
-autocmd FileType html set omnifunc=htmlcomplete#CompleteTags
-autocmd FileType css set omnifunc=csscomplete#CompleteCSS
-autocmd FileType xml set omnifunc=xmlcomplete#CompleteTags
-autocmd FileType php set omnifunc=phpcomplete#CompletePHP
-autocmd BufNewFile,BufRead *.scss set ft=scss.css
+"autocmd FileType python set omnifunc=pythoncomplete#Complete
+"autocmd FileType javascript set omnifunc=javascriptcomplete#CompleteJS
+"autocmd FileType html set omnifunc=htmlcomplete#CompleteTags
+"autocmd FileType css set omnifunc=csscomplete#CompleteCSS
+"autocmd FileType xml set omnifunc=xmlcomplete#CompleteTags
+"autocmd FileType php set omnifunc=phpcomplete#CompletePHP
+"autocmd BufNewFile,BufRead *.scss set ft=scss.css
 
-"let g:SuperTabDefaultCompletionType = "context"
-"let g:SuperTabClosePreviewOnPopupClose = 1 
-"let g:SuperTabLongestHighlight = 1
+
+nnoremap <leader>g :AgBuffer
 
 "}}}
 "abbreviations {{{
@@ -393,34 +509,26 @@ iab sunday     Sunday
 "}}}
 "plugin mappings {{{
 
-"Unite
-let g:unite_source_history_yank_enable = 1
-call unite#filters#matcher_default#use(['matcher_fuzzy'])
-nnoremap <leader>y :<C-u>Unite -no-split -buffer-name=yank history/yank<cr>
-
-"explore current dir
-map EE  :NERDTreeToggle<CR>
-
 "}}}
 ".vimrc editing maps {{{
 
 "makes it easy to edit/reload vimrc for tweaks. I like to tweak.
 :nmap <leader>s :so $MYVIMRC<CR>
-:nmap <leader>v :tabe $MYVIMRC<CR>
+:nmap <leader>v :vsp $MYVIMRC<CR>
 
 "}}}
 "mappings to swap 2 words {{{
 
 " Swap word with next word
-nmap <silent> gw    "_yiw:s/\(\%#\w\+\)\(\_W\+\)\(\w\+\)/\3\2\1/<cr><c-o><c-l>
+nmap <silent> gw    "_yiw:s/\(\%#\w\+\)\(\_W\+\)\(\w\+\)/\3\2\1/<cr>
 
 "}}}
 "newlines while typing {{{
 
 " here are some commands for new lines, quickly while in insert mode
-imap <D-CR> <Esc>o
-imap <D-S-CR> <Esc>A;<CR>
-imap <D-S-A> <Esc>A:<CR>
+"imap <D-CR> <Esc>o
+"imap <D-S-CR> <Esc>A;<CR>
+"imap <D-S-A> <Esc>A:<CR>
 
 "}}}
 "buffer navigation nmaps {{{
@@ -433,24 +541,19 @@ map <C-l> <C-W>l
 "}}}
 "general maps {{{
 
-" Jump to matching pairs easily, with Tab
-nnoremap <Tab> %
-vnoremap <Tab> %
-
 "make vim use correct regexes
 nnoremap / /\v
 vnoremap / /\v
 
-map <leader>l :set list!<CR>
-nnoremap <leader>i :set list!<cr>
+nnoremap <leader>l :set list!<cr>
 
 " Speed up scrolling of the viewport slightly
 nnoremap <C-e> 2<C-e>
 nnoremap <C-y> 2<C-y>
 
-
 "changes :command to ;command making it faster
 nnoremap ; :
+vnoremap ; :
 
 "make this the way it should work by default
 noremap Y y$
@@ -458,20 +561,25 @@ noremap Y y$
 "toggle wrap
 nmap <leader>w :set nowrap!<CR>
 
-" make ii esc, in insert mode.
-map! ii <C-[>
+"when wrapping, wrap text to the correct indentation
+set breakindent
+set showbreak=↪
+
+" make jj esc, in insert mode.
+inoremap jj <C-[>
+
+" disable esc key to stop using it
+inoremap <esc> <nop>
 
 " easily, temporarily disable search highlighting"
 nmap <silent> <leader>n :silent :nohlsearch<CR>
-
-" toggle a scratch buffer, in a split
-"map ,S :call ToggleScratch()<CR>
 
 " sudo write to files that weren't opened with sudo originally!
 cmap w!! w !sudo tee % >/dev/null
 
 "}}}
 "expansions {{{
+
 
 "file directory
 imap <leader>fd    <C-R>=expand("%:p:h")<CR>
@@ -494,15 +602,6 @@ exe "normal o#return \<cr>\<esc>"
 normal >'<
 endfunction
 "}}}
-"Toggle Scratch Buffer {{{
-function! ToggleScratch()
-  if expand('%') == g:ScratchBufferName
-    quit
-  else
-    Sscratch
-  endif
-endfunction
-"}}}
 "insert/swap iScript debug statements {{{
 function! Logging(level)
     let base_string = 'debug.log("' . a:level . '", "'
@@ -523,7 +622,16 @@ function! Logging(level)
     endif
 endfunction
 "}}}
-"
+" Refactor function to easily find/replace a dictionary of words with new words {{{
+" Refactor the given lines using a dictionary
+" replacing all occurences of each key in the dictionary with its value
+function! Refactor(dict) range
+  execute a:firstline . ',' . a:lastline .  's/\C\<\%(' . join(keys(a:dict),'\|'). '\)\>/\='.string(a:dict).'[submatch(0)]/ge'
+endfunction
+
+command! -range=% -nargs=1 Refactor :<line1>,<line2>call Refactor(<args>)
+"}}}
+
 "iScript imaps {{{
 
 "these will input the beginning of a debug.log statement for iScriptDebug
@@ -544,24 +652,6 @@ nmap \dd :call Logging("DEBUG")<CR>
 
 "}}}
 
-"force.com configuration {{{
-
-let g:apex_backup_folder="/Users/camron/temp/apex/backup"
-let g:apex_temp_folder = "/Users/camron/temp/apex/deployment"
-let g:apex_properties_folder = "/Users/camron/.apex-properties"
-let g:apex_workspace_path = "/Users/camron/Development/DriverDo-Force/"
-
-let g:apex_server=1 " start server on first call
-" allow server to wait for new connections within 30 minutes
-let g:apex_server_timeoutSec=60*30
-
-let g:apex_tooling_force_dot_com_path="/usr/local/bin/tooling-force.com.jar"
-
-
-"}}}
-
-
-
-
+let $PATH=$PATH . ':' . expand('~/.composer/vendor/bin')
 
 " vim:foldmethod=marker:foldlevel=1:ft=vim:
